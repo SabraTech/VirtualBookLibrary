@@ -1,36 +1,41 @@
 package com.example.space.virtualbooklibrary.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Book implements Serializable {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -3525730931461051035L;
+    private static final long serialVersionUID = 123L;
     private int ratingsCount;
-    private String Id = "", description = "", thumbnailLink = "", title = "", maturityRating = "",
-            ratingStars = "", googleEbooksPrice = "", message = "", link = "", mainCategory = "";
-    private java.util.List<String> authors, categories;
+    private String Id = "",
+            description = "",
+            thumbnailLink = "",
+            title = "",
+            maturityRating = "",
+            ratingStars = "",
+            googleEbooksPrice = "",
+            message = "",
+            link = "",
+            mainCategory = "";
+    private List<String> authors, categories;
 
     public Book(int ratingsCount, String Id, String description, String thumbnailLink, String title,
                 String maturityRating, String ratingStars, String googleEbooksPrice, String message,
-                String link, String mainCategory, java.util.List<String> authors,
-                java.util.List<String> categories) {
-        this.ratingsCount = ratingsCount;
+                String link, String mainCategory, List<String> authors,
+                List<String> categories) {
         this.Id = Id;
-        this.description = description;
-        this.thumbnailLink = thumbnailLink;
-        this.title = title;
-        this.maturityRating = maturityRating;
-        this.ratingStars = ratingStars;
-        this.googleEbooksPrice = googleEbooksPrice;
-        this.message = message;
         this.link = link;
-        this.mainCategory = mainCategory;
+        this.title = title;
         this.authors = authors;
+        this.message = message;
         this.categories = categories;
-
+        this.ratingStars = ratingStars;
+        this.description = description;
+        this.ratingsCount = ratingsCount;
+        this.mainCategory = mainCategory;
+        this.thumbnailLink = thumbnailLink;
+        this.maturityRating = maturityRating;
+        this.googleEbooksPrice = googleEbooksPrice;
     }
 
     // The count of people who rated the book.
@@ -85,7 +90,7 @@ public class Book implements Serializable {
     }
 
     // Returns the book's main category.
-    public String getMainCategor() {
+    public String getMainCategory() {
         return mainCategory;
     }
 
@@ -98,7 +103,4 @@ public class Book implements Serializable {
     public java.util.List<String> getCategories() {
         return categories;
     }
-
 }
-
-
