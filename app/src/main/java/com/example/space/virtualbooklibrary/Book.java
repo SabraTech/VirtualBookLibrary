@@ -1,4 +1,4 @@
-package com.example.space.virtualbooklibrary.model;
+package com.example.space.virtualbooklibrary;
 
 import java.io.Serializable;
 import java.util.List;
