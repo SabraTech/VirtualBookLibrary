@@ -1,5 +1,6 @@
 package com.example.space.virtualbooklibrary;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class ResultViewActivity extends AppCompatActivity {
     private ListAllBooksAdapter booksRecyclerAdapter;
     private List<Book> books;
     private String URL;
+    private ProgressDialog loading;
 
 
     @Override
@@ -47,6 +49,12 @@ public class ResultViewActivity extends AppCompatActivity {
         URL = "http://192.168.43.134:8080/books?ISBN="
                 + isbn + "&author=" + author + "&title=" + title + "&random=" + randomText;
 
+        loading = new ProgressDialog(this);
+        loading.setTitle("Loading");
+        loading.setCancelable(false);
+        loading.setMessage("Query Books...");
+        loading.show();
+
         new Connection().execute();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -55,6 +63,7 @@ public class ResultViewActivity extends AppCompatActivity {
         booksRecyclerAdapter = new ListAllBooksAdapter(this, books);
         recyclerViewBooks.setAdapter(booksRecyclerAdapter);
 
+        loading.dismiss();
     }
 
     private void getBooksList() {
