@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -38,6 +39,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final Book book = books.get(position);
         final String bookCoverLink = book.getThumbnailLink();
         final String title = book.getTitle();
+        final int rating = book.getRatingsCount();
         List<String> authors = book.getAuthors();
         StringBuilder sb = new StringBuilder();
         for (String s : authors) {
@@ -49,6 +51,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         new DownloadImageTask(((ItemBooksViewHolder) holder).bookCover).execute(bookCoverLink);
         ((ItemBooksViewHolder) holder).txtTitle.setText(title);
         ((ItemBooksViewHolder) holder).txtAuthor.setText(author);
+        ((ItemBooksViewHolder) holder).ratingBar.setRating((float) rating);
     }
 
     @Override
@@ -63,6 +66,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         TextView txtTitle, txtAuthor;
         ImageView bookCover;
+        RatingBar ratingBar;
         private Context context;
 
         ItemBooksViewHolder(Context context, View itemView) {
@@ -70,6 +74,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             txtTitle = itemView.findViewById(R.id.txtTitle);
             txtAuthor = itemView.findViewById(R.id.txtAuthor);
             bookCover = itemView.findViewById(R.id.bookCover);
+            ratingBar = itemView.findViewById(R.id.ratingbar);
             this.context = context;
         }
     }
