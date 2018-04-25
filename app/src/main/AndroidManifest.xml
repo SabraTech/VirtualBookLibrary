@@ -24,6 +24,9 @@
             android:parentActivityName=".SearchActivity" />
 
         <activity android:name=".SearchActivity" />
+        <activity
+            android:name=".RegisterActivity"
+            android:parentActivityName=".LoginActivity" />
     </application>
 
 </manifest>

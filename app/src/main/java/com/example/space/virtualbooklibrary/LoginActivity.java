@@ -1,10 +1,11 @@
 package com.example.space.virtualbooklibrary;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -25,23 +26,21 @@ public class LoginActivity extends AppCompatActivity {
         usernameString = username.getText().toString();
         passwordString = username.getText().toString();
 
-        if (TextUtils.isEmpty(usernameString)) {
-            username.setError("Enter username!");
-            return;
-        }
-
-        if (TextUtils.isEmpty(passwordString)) {
-            password.setError("Enter password!");
-            return;
+        if (validate(usernameString, passwordString)) {
+            // give the user the session to the app
+        } else {
+            Toast.makeText(this, "Invalid username or empty fields", Toast.LENGTH_SHORT).show();
         }
 
         // send data to database to enter the session
     }
 
     public void register(View view) {
-        // go to the register activity
-//        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-//        finish();
+        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        finish();
+    }
 
+    private boolean validate(String usernameStr, String passwordStr) {
+        return (usernameStr.length() > 0 || passwordStr.length() > 0);
     }
 }

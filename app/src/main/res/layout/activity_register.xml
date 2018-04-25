@@ -162,7 +162,7 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="23dp"
                 android:background="@drawable/bt_shape"
-                android:onClick="search"
+                android:onClick="submit"
                 android:text="Submit"
                 android:textColor="#d3d3d3" />
 
