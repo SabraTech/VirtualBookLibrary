@@ -39,14 +39,8 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final Book book = books.get(position);
         final String bookCoverLink = book.getThumbnailLink();
         final String title = book.getTitle();
-        final int rating = book.getRatingsCount();
-        List<String> authors = book.getAuthors();
-        StringBuilder sb = new StringBuilder();
-        for (String s : authors) {
-            sb.append(s);
-            sb.append(", ");
-        }
-        final String author = sb.toString();
+        final int rating = book.getRatingStars().length();
+        final String author = book.getAuthors().toString();
 
         new DownloadImageTask(((ItemBooksViewHolder) holder).bookCover).execute(bookCoverLink);
         ((ItemBooksViewHolder) holder).txtTitle.setText(title);

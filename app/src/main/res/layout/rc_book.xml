@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:numStars="5"
-                android:stepSize="0.5" />
+                android:stepSize="1" />
 
 
         </LinearLayout>

@@ -44,12 +44,12 @@
                 android:textColorHint="#c5c5c5">
 
                 <EditText
-                    android:id="@+id/edit_text_username"
+                    android:id="@+id/edit_text_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Username"
-                    android:inputType="text"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
                     android:paddingBottom="10dp"
                     android:textColor="#305195"
                     android:textCursorDrawable="@drawable/bg_input_cursor"
