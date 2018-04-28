@@ -7,33 +7,29 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class LoginActivity extends AppCompatActivity {
 
-    private final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    private EditText email, password;
-    private String emailString, passwordString;
+    private EditText username, password;
+    private String usernameString, passwordString;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        email = findViewById(R.id.edit_text_email);
+        username = findViewById(R.id.edit_text_username);
         password = findViewById(R.id.edit_text_password);
 
     }
 
     public void login(View view) {
-        emailString = email.getText().toString();
-        passwordString = email.getText().toString();
+        usernameString = username.getText().toString();
+        passwordString = username.getText().toString();
 
-        if (validate(emailString, passwordString)) {
+        if (validate(usernameString, passwordString)) {
             // give the user the session to the app
         } else {
-            Toast.makeText(this, "Invalid email or empty fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid username or empty fields", Toast.LENGTH_SHORT).show();
         }
 
         // send data to database to enter the session
@@ -44,8 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private boolean validate(String emailStr, String passwordStr) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
-        return (passwordStr.length() > 0 || passwordStr.equals(";")) && matcher.find();
+    private boolean validate(String usernameStr, String passwordStr) {
+        return passwordStr.length() > 0 && usernameStr.length() > 0;
     }
 }
