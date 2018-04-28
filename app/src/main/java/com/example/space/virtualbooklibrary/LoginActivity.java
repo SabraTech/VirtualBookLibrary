@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view) {
         usernameString = username.getText().toString();
-        passwordString = username.getText().toString();
+        passwordString = password.getText().toString();
 
         if (validate(usernameString, passwordString)) {
             // give the user the session to the app
