@@ -46,7 +46,7 @@ public class ResultViewActivity extends AppCompatActivity {
         title = title.replaceAll(" ", "+");
         author = author.replaceAll(" ", "+");
         randomText = randomText.replaceAll(" ", "+");
-        URL = "http://192.168.43.134:8080/books?ISBN="
+        URL = "http://192.168.0.104:8080/books?ISBN="
                 + isbn + "&author=" + author + "&title=" + title + "&random=" + randomText;
 
         loading = new ProgressDialog(this);
@@ -56,6 +56,12 @@ public class ResultViewActivity extends AppCompatActivity {
         loading.show();
 
         new Connection().execute();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewBooks = findViewById(R.id.recycleBooksList);
