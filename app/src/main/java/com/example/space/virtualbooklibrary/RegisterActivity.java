@@ -1,6 +1,5 @@
 package com.example.space.virtualbooklibrary;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,7 +24,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText firstName, lastName, username, email, password, passwordRept;
     private String fnameString, lnameString, usernameString, emailString, passwordString, passwordReptString;
     private String URL, errorMesg;
-    private ProgressDialog loading;
     private int ans;
 
     @Override
@@ -37,8 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
         email = findViewById(R.id.edit_text_newemail);
         password = findViewById(R.id.edit_text_newpassword);
         passwordRept = findViewById(R.id.edit_text_newpassword2);
-
-        loading = new ProgressDialog(this);
 
         ans = -1;
         errorMesg = "";
@@ -59,31 +57,20 @@ public class RegisterActivity extends AppCompatActivity {
             URL = "http://192.168.0.104:8080/signup?id="
                     + usernameString + "&password=" + passwordString + "&firstname=" + fnameString + "&lastname=" + lnameString + "&email=" + emailString;
 
-            loading.setTitle("Loading");
-            loading.setCancelable(false);
-            loading.setMessage("Registering...");
-            loading.show();
-
             new Connection().execute();
-
-            loading.dismiss();
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (ans == 1) {
-                // go to search
-                startActivity(new Intent(RegisterActivity.this, SearchActivity.class));
-                finish();
-            } else {
-                Toast.makeText(this, errorMesg, Toast.LENGTH_SHORT).show();
-            }
 
         } else {
             Toast.makeText(this, "Empty fields", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void afterSignup() {
+        if (ans == 1) {
+            // go to search
+            startActivity(new Intent(RegisterActivity.this, SearchActivity.class));
+            finish();
+        } else {
+            Toast.makeText(this, errorMesg, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -114,10 +101,28 @@ public class RegisterActivity extends AppCompatActivity {
 
     private class Connection extends AsyncTask {
 
+        private LovelyProgressDialog loading = new LovelyProgressDialog(RegisterActivity.this).setCancelable(false);
+
+
         @Override
         protected Object doInBackground(Object... arg0) {
             signup();
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading.setTitle("Registering...")
+                    .setTopColor(getResources().getColor(R.color.colorAccent))
+                    .show();
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            loading.dismiss();
+            afterSignup();
         }
 
     }

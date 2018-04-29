@@ -1,6 +1,5 @@
 package com.example.space.virtualbooklibrary;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.google.api.client.util.Base64;
 import com.sun.xml.messaging.saaj.util.ByteInputStream;
+import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -28,7 +28,6 @@ public class ResultViewActivity extends AppCompatActivity {
     private ListAllBooksAdapter booksRecyclerAdapter;
     private List<Book> books;
     private String URL;
-    private ProgressDialog loading;
 
 
     @Override
@@ -49,27 +48,16 @@ public class ResultViewActivity extends AppCompatActivity {
         URL = "http://192.168.0.104:8080/books?ISBN="
                 + isbn + "&author=" + author + "&title=" + title + "&random=" + randomText;
 
-        loading = new ProgressDialog(this);
-        loading.setTitle("Loading");
-        loading.setCancelable(false);
-        loading.setMessage("Query Books...");
-        loading.show();
-
         new Connection().execute();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    }
 
+    private void afterBooksQuery() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewBooks = findViewById(R.id.recycleBooksList);
         recyclerViewBooks.setLayoutManager(linearLayoutManager);
         booksRecyclerAdapter = new ListAllBooksAdapter(this, books);
         recyclerViewBooks.setAdapter(booksRecyclerAdapter);
-
-        loading.dismiss();
     }
 
     private void getBooksList() {
@@ -95,10 +83,27 @@ public class ResultViewActivity extends AppCompatActivity {
 
     private class Connection extends AsyncTask {
 
+        private LovelyProgressDialog loading = new LovelyProgressDialog(ResultViewActivity.this).setCancelable(false);
+
         @Override
         protected Object doInBackground(Object... arg0) {
             getBooksList();
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading.setTitle("Loading Books...")
+                    .setTopColor(getResources().getColor(R.color.colorAccent))
+                    .show();
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            loading.dismiss();
+            afterBooksQuery();
         }
 
     }

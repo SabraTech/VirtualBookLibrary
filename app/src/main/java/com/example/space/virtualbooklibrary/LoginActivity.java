@@ -1,6 +1,5 @@
 package com.example.space.virtualbooklibrary;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,7 +20,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText username, password;
     private String usernameString, passwordString;
     private String URL, errorMesg;
-    private ProgressDialog loading;
     private int ans;
 
     @Override
@@ -29,8 +29,6 @@ public class LoginActivity extends AppCompatActivity {
 
         username = findViewById(R.id.edit_text_username);
         password = findViewById(R.id.edit_text_password);
-
-        loading = new ProgressDialog(this);
 
         ans = -1;
         errorMesg = "";
@@ -45,32 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             URL = "http://192.168.0.104:8080/signin?id="
                     + usernameString + "&password=" + passwordString;
 
-            loading.setTitle("Loading");
-            loading.setCancelable(false);
-            loading.setMessage("Registering...");
-            loading.show();
-
             new Connection().execute();
-
-
-            loading.dismiss();
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (ans == 1) {
-                // go to search
-                startActivity(new Intent(LoginActivity.this, SearchActivity.class));
-                finish();
-            } else if (ans == 2) {
-                Toast.makeText(this, "Invalid username or password format", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Error in connection", Toast.LENGTH_SHORT).show();
-            }
-
 
         } else {
             Toast.makeText(this, "Invalid username or empty fields", Toast.LENGTH_SHORT).show();
@@ -79,11 +52,22 @@ public class LoginActivity extends AppCompatActivity {
 
     public void register(View view) {
         startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-        finish();
     }
 
     private boolean validate(String usernameStr, String passwordStr) {
         return passwordStr.length() > 0 && usernameStr.length() > 0;
+    }
+
+    private void afterSignin() {
+        if (ans == 1) {
+            // go to search
+            startActivity(new Intent(LoginActivity.this, SearchActivity.class));
+            finish();
+        } else if (ans == 2) {
+            Toast.makeText(this, "Invalid username or password format", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error in connection", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void signin() {
@@ -108,11 +92,27 @@ public class LoginActivity extends AppCompatActivity {
 
     private class Connection extends AsyncTask {
 
+        private LovelyProgressDialog loading = new LovelyProgressDialog(LoginActivity.this).setCancelable(false);
+
         @Override
         protected Object doInBackground(Object... arg0) {
             signin();
             return null;
         }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading.setTitle("Signing...")
+                    .setTopColor(getResources().getColor(R.color.colorAccent))
+                    .show();
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            loading.dismiss();
+            afterSignin();
+        }
     }
 }
