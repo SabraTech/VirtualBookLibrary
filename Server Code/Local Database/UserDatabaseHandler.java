@@ -1,8 +1,10 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
+import com.example.space.virtualbooklibrary.User;
+
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
 
 // singleton class to handle communications with the database.
 public class UserDatabaseHandler {
@@ -10,7 +12,7 @@ public class UserDatabaseHandler {
     // singleton instance.
     private static UserDatabaseHandler handler;
     // connection instance.
-    private static Connection con;
+    private static Connection connection;
 
     // getter for the singleton instance.
     public static UserDatabaseHandler getHandler() {
@@ -28,23 +30,25 @@ public class UserDatabaseHandler {
         if (userExists(user.getId())) {
             return new AuthenticationResult("ID already exists!");
         }
-        if (user.getId().length() < 7 || !isAlphabetic(user.getId().charAt(0)))
+        if (user.getId().length() < 7 || !isAlphabetic(user.getId().charAt(0))) {
             return new AuthenticationResult(
                     "Invalid ID, ID should be greater than 6 characters starting with an alphabetic char");
+        }
 
-        if (user.getPass().length() < 7 || !isAlphabetic(user.getPass().charAt(0))
-                || !containsNumericDigit(user.getPass()))
+        if (user.getPass().length() < 7 || !isAlphabetic(user.getPass().charAt(0)) || !containsNumericDigit(user.getPass())) {
             return new AuthenticationResult(
-                    "Invalid Pass, password should be greater than 6 characters starting with an alphabetic char with at least 1 numeric digit");
+                    "Invalid Password, password should be greater than 6 characters starting with an alphabetic char with at least 1 numeric digit");
+        }
+
         try {
-            Statement stmt = con.createStatement();
+            Statement stmt = connection.createStatement();
             String query = "insert into Library.User value(" + "\"" + user.getId() + "\", \"" + user
                     .getPass() + "\", \"" + user.getFirstName() + "\", \"" + user.getLastName() + "\", \""
                     + user.getEmail() + "\");";
-            System.out.println(query);
             int rs = stmt.executeUpdate(query);
-            if (rs != 1)
+            if (rs != 1) {
                 return new AuthenticationResult("Error!");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -55,18 +59,17 @@ public class UserDatabaseHandler {
     // results.
     public AuthenticationResult signIn(String id, String pass) {
         try {
-            Statement stmt = con.createStatement();
+            Statement stmt = connection.createStatement();
             String query = "Select * from Library.User where id = \"" + id + "\";";
-            System.out.println(query);
             ResultSet rs = stmt.executeQuery(query);
             if (rs.next()) {
                 if (rs.getString(2).equals(pass))
                     return new AuthenticationResult();
                 else
-                    return new AuthenticationResult("Invalid id or pass");
+                    return new AuthenticationResult("Invalid ID or Password");
 
             }
-            return new AuthenticationResult("Invalid id");
+            return new AuthenticationResult("Invalid ID");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -79,9 +82,8 @@ public class UserDatabaseHandler {
         boolean exists = false;
         try {
             Statement stmt;
-            stmt = con.createStatement();
+            stmt = connection.createStatement();
             String query = "select * from Library.User where User.id = \"" + username + "\"";
-            System.out.println(query);
             ResultSet rs = stmt.executeQuery(query);
             exists = rs.next();
         } catch (SQLException e) {
@@ -94,7 +96,7 @@ public class UserDatabaseHandler {
     private UserDatabaseHandler() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Library"// database
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Library"// database
                     , "root"// username
                     , ""// password
             );

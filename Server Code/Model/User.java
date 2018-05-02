@@ -1,3 +1,5 @@
+package com.example.space.virtualbooklibrary;
+
 public class User {
 
     private String id, pass, firstName, lastName, email;
@@ -5,9 +7,9 @@ public class User {
     public User(String id, String pass, String firstName, String lastName, String email) {
         this.id = id;
         this.pass = pass;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
     }
 
     public String getId() {

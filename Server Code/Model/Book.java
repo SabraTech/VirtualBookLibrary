@@ -1,3 +1,5 @@
+package com.example.space.virtualbooklibrary;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,9 +20,9 @@ public class Book implements Serializable {
   private List<String> authors, categories;
 
   public Book(int ratingsCount, String Id, String description, String thumbnailLink, String title,
-      String maturityRating, String ratingStars, String googleEbooksPrice, String message,
-      String link, String mainCategory, List<String> authors,
-      List<String> categories) {
+              String maturityRating, String ratingStars, String googleEbooksPrice, String message,
+              String link, String mainCategory, List<String> authors,
+              List<String> categories) {
     this.Id = Id;
     this.link = link;
     this.title = title;

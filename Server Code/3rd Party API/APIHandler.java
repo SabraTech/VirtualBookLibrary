@@ -1,3 +1,4 @@
+import com.example.space.virtualbooklibrary.Book;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -16,7 +17,7 @@ import java.text.NumberFormat;
 
 /*
  Singleton class, handles communications with Google Books through it's API
- and returns the results as an ArrayList of Books 
+ and returns the results as an ArrayList of Books
 */
 public class APIHandler {
 
@@ -96,7 +97,7 @@ public class APIHandler {
 
     // Set up Books client.
     final Books books = new Books.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        null).setApplicationName(APPLICATION_NAME).setGoogleClientRequestInitializer(
+            null).setApplicationName(APPLICATION_NAME).setGoogleClientRequestInitializer(
             new BooksRequestInitializer(ClientCredentials.API_KEY)).build();
 
     // Set query string and filter only Google eBooks.
@@ -115,7 +116,7 @@ public class APIHandler {
       int ratingsCount = 0;
 
       String Id = "", thumbnailLink = "", title = "", description = "", maturityRating = "",
-          ratingStars = "", googleEbooksPrice = "", message = "", link = "", mainCategory = "";
+              ratingStars = "", googleEbooksPrice = "", message = "", link = "", mainCategory = "";
       java.util.List<String> authors;
       java.util.List<String> categories;
 
@@ -132,7 +133,9 @@ public class APIHandler {
       Id = volume.getId();
 
       // Image link.
-      thumbnailLink = volumeInfo.getImageLinks().getThumbnail();
+      if (volumeInfo.getImageLinks() != null) {
+        thumbnailLink = volumeInfo.getImageLinks().getThumbnail();
+      }
 
       // Title.
       title = volumeInfo.getTitle();
@@ -162,12 +165,12 @@ public class APIHandler {
       // Link to Google eBooks.
       link = volumeInfo.getInfoLink();
       searchResults.add(new Book(ratingsCount, Id, description, thumbnailLink, title,
-          maturityRating, ratingStars, googleEbooksPrice, message, link, mainCategory, authors,
-          categories));
+              maturityRating, ratingStars, googleEbooksPrice, message, link, mainCategory, authors,
+              categories));
     }
 
     System.out.println(volumes.getTotalItems()
-        + " total results at http://books.google.com/ebooks?q=" + URLEncoder.encode(query, "UTF-8"));
+            + " total results at http://books.google.com/ebooks?q=" + URLEncoder.encode(query, "UTF-8"));
 
     return searchResults;
   }
@@ -175,7 +178,7 @@ public class APIHandler {
   public static void main(String[] args) {
     try {
       getHandler().queryGoogleBooks(""/* Random Text */
-          , "Game of thrones"/* Title */, "George"/* Author */, ""/* ISBN */);
+              , "game"/* Title */, ""/* Author */, ""/* ISBN */);
       return;
     } catch (Exception e) {
       System.err.println(e.getMessage());

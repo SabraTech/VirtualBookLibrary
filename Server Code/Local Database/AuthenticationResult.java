@@ -1,7 +1,7 @@
 public class AuthenticationResult {
 
-    private boolean authenticated;
     private String error;
+    private boolean authenticated;
 
     // Constructor for a valid authentication operation.
     public AuthenticationResult() {

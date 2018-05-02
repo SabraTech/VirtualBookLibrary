@@ -7,15 +7,16 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+
 import java.util.List;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayOutputStream;
+import com.example.space.virtualbooklibrary.Book;
 
 public class TestMain {
     public static void main(String[] args) throws Exception {
         HttpClient client = new DefaultHttpClient();
-        String URL = "http://localhost:8080/books?ISBN="
-                + ISBN + "&author=" + author + "&title=" + title + "&random=" + randomText;
+        String URL = "http://localhost:8080/books?title=game";
         HttpGet request = new HttpGet(URL);
         HttpResponse response = client.execute(request);
 
