@@ -10,7 +10,7 @@ import android.widget.Toast;
 public class SearchActivity extends AppCompatActivity {
 
     private EditText title, isbn, author, random;
-    private String titleString, isbnString, authorString, randomString;
+    private String titleString, isbnString, authorString, randomString, serverIp;
 
     @Override
     protected void onStart() {
@@ -30,6 +30,9 @@ public class SearchActivity extends AppCompatActivity {
         isbn = findViewById(R.id.edit_text_isbn);
         author = findViewById(R.id.edit_text_author);
         random = findViewById(R.id.edit_text_random);
+
+        Intent intentData = getIntent();
+        serverIp = intentData.getStringExtra("server");
     }
 
     public void search(View view) {
@@ -44,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
             intent.putExtra("isbn", isbnString);
             intent.putExtra("author", authorString);
             intent.putExtra("random", randomString);
+            intent.putExtra("server", serverIp);
             startActivity(intent);
         } else {
             Toast.makeText(this, "At least search by one item!", Toast.LENGTH_SHORT).show();

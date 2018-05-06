@@ -23,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private EditText firstName, lastName, username, email, password, passwordRept;
     private String fnameString, lnameString, usernameString, emailString, passwordString, passwordReptString;
-    private String URL, errorMesg;
+    private String URL, errorMesg, serverIp;
     private int ans;
 
     @Override
@@ -41,6 +41,9 @@ public class RegisterActivity extends AppCompatActivity {
         ans = -1;
         errorMesg = "";
 
+        Intent intentData = getIntent();
+        serverIp = intentData.getStringExtra("server");
+
     }
 
 
@@ -54,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (validate(fnameString, lnameString, usernameString, emailString, passwordString, passwordReptString)) {
             // here add the user to the database
-            URL = "http://192.168.0.104:8080/signup?id="
+            URL = "http://" + serverIp + ":8080/signup?id="
                     + usernameString + "&password=" + passwordString + "&firstname=" + fnameString + "&lastname=" + lnameString + "&email=" + emailString;
 
             new Connection().execute();
@@ -67,7 +70,9 @@ public class RegisterActivity extends AppCompatActivity {
     private void afterSignup() {
         if (ans == 1) {
             // go to search
-            startActivity(new Intent(RegisterActivity.this, SearchActivity.class));
+            Intent intent = new Intent(RegisterActivity.this, SearchActivity.class);
+            intent.putExtra("server", serverIp);
+            startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, errorMesg, Toast.LENGTH_SHORT).show();

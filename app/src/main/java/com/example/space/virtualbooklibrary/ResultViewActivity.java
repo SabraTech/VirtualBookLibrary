@@ -41,11 +41,12 @@ public class ResultViewActivity extends AppCompatActivity {
         String isbn = intentData.getStringExtra("isbn");
         String author = intentData.getStringExtra("author");
         String randomText = intentData.getStringExtra("random");
+        String serverIp = intentData.getStringExtra("server");
 
         title = title.replaceAll(" ", "+");
         author = author.replaceAll(" ", "+");
         randomText = randomText.replaceAll(" ", "+");
-        URL = "http://192.168.0.104:8080/books?ISBN="
+        URL = "http://" + serverIp + ":8080/books?ISBN="
                 + isbn + "&author=" + author + "&title=" + title + "&random=" + randomText;
 
         new Connection().execute();

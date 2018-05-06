@@ -1,10 +1,14 @@
 package com.example.space.virtualbooklibrary;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText username, password;
     private String usernameString, passwordString;
-    private String URL, errorMesg;
+    private String URL, errorMesg, serverIp;
     private int ans;
 
     @Override
@@ -32,6 +36,27 @@ public class LoginActivity extends AppCompatActivity {
 
         ans = -1;
         errorMesg = "";
+
+        getServerIp();
+    }
+
+    public void getServerIp() {
+        View view = LayoutInflater.from(LoginActivity.this).inflate(R.layout.dialog_server_ip, null);
+        final AutoCompleteTextView input = view.findViewById(R.id.server_ip);
+        new AlertDialog.Builder(LoginActivity.this)
+                .setTitle("Server IP")
+                .setView(R.layout.dialog_server_ip)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        serverIp = input.getText().toString().trim();
+                        if (serverIp.length() > 0) {
+                            dialogInterface.dismiss();
+                        } else {
+                            input.setError("Enter the IP!");
+                        }
+                    }
+                }).show();
     }
 
     public void login(View view) {
@@ -40,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (validate(usernameString, passwordString)) {
             // give the user the session to the app
-            URL = "http://192.168.0.104:8080/signin?id="
+            URL = "http://" + serverIp + ":8080/signin?id="
                     + usernameString + "&password=" + passwordString;
 
             new Connection().execute();
@@ -51,7 +76,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        intent.putExtra("server", serverIp);
+        startActivity(intent);
     }
 
     private boolean validate(String usernameStr, String passwordStr) {
@@ -61,10 +88,12 @@ public class LoginActivity extends AppCompatActivity {
     private void afterSignin() {
         if (ans == 1) {
             // go to search
-            startActivity(new Intent(LoginActivity.this, SearchActivity.class));
+            Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
+            intent.putExtra("server", serverIp);
+            startActivity(intent);
             finish();
         } else if (ans == 2) {
-            Toast.makeText(this, "Invalid username or password format", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, errorMesg, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error in connection", Toast.LENGTH_SHORT).show();
         }
