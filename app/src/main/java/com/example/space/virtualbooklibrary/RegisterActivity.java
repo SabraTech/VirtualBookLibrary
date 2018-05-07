@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
             new Connection().execute();
 
         } else {
-            Toast.makeText(this, "Empty fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid email format or Empty field", Toast.LENGTH_SHORT).show();
         }
     }
 

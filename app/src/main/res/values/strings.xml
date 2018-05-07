@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Virtual Book Library</string>
+    <string name="login_label">Book Library</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="login">Login</string>
+    <string name="new_user">New User? Click here!</string>
+    <string name="register">Register</string>
+    <string name="f_name">First Name</string>
+    <string name="l_name">Last Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password_2">Password Again</string>
+    <string name="submit">Submit</string>
+    <string name="search_label">Find Books</string>
+    <string name="hint_book">Book Title</string>
+    <string name="hint_isbn">Book ISBN</string>
+    <string name="hint_author">Book Author</string>
+    <string name="hint_random_text">Random Text</string>
+    <string name="search">Search</string>
+    <string name="hint_ip">IP: xxx.xxx.x.x</string>
 </resources>

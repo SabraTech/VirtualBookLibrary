@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="50dp"
-                android:text="Book Library"
+                android:text="@string/login_label"
                 android:textColor="#FFCC00"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Username"
+                    android:hint="@string/hint_username"
                     android:inputType="text"
                     android:paddingBottom="10dp"
                     android:textColor="#305195"
@@ -76,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Password"
+                    android:hint="@string/hint_password"
                     android:inputType="textPassword"
                     android:paddingBottom="10dp"
                     android:textColor="#305195"
@@ -99,7 +99,7 @@
                 android:layout_marginBottom="23dp"
                 android:background="@drawable/bt_shape"
                 android:onClick="login"
-                android:text="Login"
+                android:text="@string/login"
                 android:textColor="#d3d3d3" />
         </RelativeLayout>
 
@@ -109,7 +109,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:onClick="register"
-            android:text="New User? Click here!"
+            android:text="@string/new_user"
             android:textColor="#9a9a9a"
             android:textSize="12sp" />
 

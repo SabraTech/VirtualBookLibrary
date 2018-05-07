@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="50dp"
-                android:text="Find Books"
+                android:text="@string/search_label"
                 android:textColor="#FFCC00"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Book Title"
+                    android:hint="@string/hint_book"
                     android:inputType="text"
                     android:paddingBottom="10dp"
                     android:textColor="@color/colorAccent"
@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Book ISBN"
+                    android:hint="@string/hint_isbn"
                     android:inputType="text"
                     android:paddingBottom="10dp"
                     android:textColor="@color/colorAccent"
@@ -107,7 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Book Author"
+                    android:hint="@string/hint_author"
                     android:inputType="text"
                     android:paddingBottom="10dp"
                     android:textColor="@color/colorAccent"
@@ -136,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_bg_edit"
-                    android:hint="Random Text"
+                    android:hint="@string/hint_random_text"
                     android:inputType="text"
                     android:paddingBottom="10dp"
                     android:textColor="@color/colorAccent"
@@ -160,7 +160,7 @@
                 android:layout_marginBottom="23dp"
                 android:background="@drawable/bt_shape"
                 android:onClick="search"
-                android:text="Search"
+                android:text="@string/search"
                 android:textColor="#d3d3d3" />
 
         </RelativeLayout>

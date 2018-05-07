@@ -12,7 +12,7 @@
             android:id="@+id/server_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="IP: xxx.xxx.x.x"
+            android:hint="@string/hint_ip"
             android:imeOptions="actionDone"
             android:inputType="text" />
 
