@@ -2,12 +2,9 @@ package com.example.space.virtualbooklibrary;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +14,20 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.io.InputStream;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Book> books;
     private Context context;
+    Picasso picasso;
 
-    public ListAllBooksAdapter(Context context, List<Book> books) {
+    public ListAllBooksAdapter(Context context, List<Book> books, Picasso picasso) {
         this.context = context;
         this.books = books;
+        this.picasso = picasso;
     }
 
     @NonNull
@@ -45,12 +45,16 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final int rating = book.getRatingStars().length();
         final String author = book.getAuthors().toString();
 
-        new DownloadImageTask(((ItemBooksViewHolder) holder).bookCover).execute(bookCoverLink);
+
+        picasso.load(bookCoverLink).placeholder(android.R.color.darker_gray).config(Bitmap.Config.RGB_565).into(((ItemBooksViewHolder) holder).bookCover);
         ((ItemBooksViewHolder) holder).txtTitle.setText(title);
         ((ItemBooksViewHolder) holder).txtAuthor.setText(author);
         ((ItemBooksViewHolder) holder).ratingBar.setRating((float) rating);
+
+        // check if the book in the list of favourite
         ((ItemBooksViewHolder) holder).favourite.setChecked(false);
         ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_gray));
+
         ((ItemBooksViewHolder) holder).favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -90,31 +94,6 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ratingBar = itemView.findViewById(R.id.ratingbar);
             favourite = itemView.findViewById(R.id.favourite_button);
             this.context = context;
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
         }
     }
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.google.api.client.util.Base64;
+import com.squareup.picasso.Picasso;
 import com.sun.xml.messaging.saaj.util.ByteInputStream;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -28,6 +29,7 @@ public class ResultViewActivity extends AppCompatActivity {
     private ListAllBooksAdapter booksRecyclerAdapter;
     private List<Book> books;
     private String URL;
+    Picasso picasso;
 
 
     @Override
@@ -54,10 +56,11 @@ public class ResultViewActivity extends AppCompatActivity {
     }
 
     private void afterBooksQuery() {
+        picasso = Picasso.with(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewBooks = findViewById(R.id.recycleBooksList);
         recyclerViewBooks.setLayoutManager(linearLayoutManager);
-        booksRecyclerAdapter = new ListAllBooksAdapter(this, books);
+        booksRecyclerAdapter = new ListAllBooksAdapter(this, books, picasso);
         recyclerViewBooks.setAdapter(booksRecyclerAdapter);
     }
 
