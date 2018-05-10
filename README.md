@@ -1,6 +1,7 @@
 # Virtual Book Library
 
 [![Build Status](https://travis-ci.com/SabraTech/VirtualBookLibrary.svg?branch=master)](https://travis-ci.com/SabraTech/VirtualBookLibrary)
+[![CodeFactor](https://www.codefactor.io/repository/github/sabratech/virtualbooklibrary/badge)](https://www.codefactor.io/repository/github/sabratech/virtualbooklibrary)
 
 E-library Application
 
