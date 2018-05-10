@@ -5,14 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.io.InputStream;
 import java.util.List;
@@ -35,7 +38,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         final Book book = books.get(position);
         final String bookCoverLink = book.getThumbnailLink();
         final String title = book.getTitle();
@@ -46,6 +49,21 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ((ItemBooksViewHolder) holder).txtTitle.setText(title);
         ((ItemBooksViewHolder) holder).txtAuthor.setText(author);
         ((ItemBooksViewHolder) holder).ratingBar.setRating((float) rating);
+        ((ItemBooksViewHolder) holder).favourite.setChecked(false);
+        ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_gray));
+        ((ItemBooksViewHolder) holder).favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_yellow));
+                    // add to user favourite
+
+                } else {
+                    ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_gray));
+                    // remove from user favourite
+                }
+            }
+        });
     }
 
     @Override
@@ -61,6 +79,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView txtTitle, txtAuthor;
         ImageView bookCover;
         RatingBar ratingBar;
+        ToggleButton favourite;
         private Context context;
 
         ItemBooksViewHolder(Context context, View itemView) {
@@ -69,6 +88,7 @@ public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             txtAuthor = itemView.findViewById(R.id.txtAuthor);
             bookCover = itemView.findViewById(R.id.bookCover);
             ratingBar = itemView.findViewById(R.id.ratingbar);
+            favourite = itemView.findViewById(R.id.favourite_button);
             this.context = context;
         }
     }
