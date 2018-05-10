@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     private void afterSignin() {
         if (ans == 1) {
             // go to search
-            Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.putExtra("server", serverIp);
             startActivity(intent);
             finish();

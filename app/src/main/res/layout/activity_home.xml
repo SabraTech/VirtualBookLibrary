@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/filter_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:onClick="filter"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_filter" />
+
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:onClick="openSearch"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_search" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/button_layout"
+        android:background="@color/cardview_dark_background" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_books"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/line">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

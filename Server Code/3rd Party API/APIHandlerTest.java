@@ -22,7 +22,6 @@ class APIHandlerTest {
         , "" // author
         , "" // ISBN
     );
-    ;
     assertEquals("Jaime+Lannister", query);
   }
 

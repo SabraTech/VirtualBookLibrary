@@ -77,7 +77,7 @@ public class APIHandler {
         List volumesList = books.volumes().list(query);
         // volumesList.setFilter("ebooks");
         volumesList.setStartIndex((long) page * 10);
-        volumesList.setMaxResults(10l);
+        volumesList.setMaxResults(10L);
 
         // Execute the query.
         Volumes volumes = volumesList.execute();

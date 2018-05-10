@@ -69,8 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void afterSignup() {
         if (ans == 1) {
-            // go to search
-            Intent intent = new Intent(RegisterActivity.this, SearchActivity.class);
+            // go to home
+            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
             intent.putExtra("server", serverIp);
             startActivity(intent);
             finish();
