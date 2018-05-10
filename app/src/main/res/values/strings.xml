@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Virtual Book Library</string>
     <string name="login_label">Book Library</string>
+    <string name="home_label">Home Library</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="login">Login</string>

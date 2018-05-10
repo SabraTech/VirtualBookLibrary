@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="#c5c5c5">
+
+        <EditText
+            android:id="@+id/edit_text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_bg_edit"
+            android:hint="@string/hint_book"
+            android:inputType="text"
+            android:paddingBottom="10dp"
+            android:textColor="@color/colorAccent"
+            android:textCursorDrawable="@drawable/bg_input_cursor"
+            android:textSize="13sp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="#c5c5c5">
+
+        <EditText
+            android:id="@+id/edit_text_isbn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_bg_edit"
+            android:hint="@string/hint_isbn"
+            android:inputType="text"
+            android:paddingBottom="10dp"
+            android:textColor="@color/colorAccent"
+            android:textCursorDrawable="@drawable/bg_input_cursor"
+            android:textSize="13sp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="#c5c5c5">
+
+        <EditText
+            android:id="@+id/edit_text_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_bg_edit"
+            android:hint="@string/hint_author"
+            android:inputType="text"
+            android:paddingBottom="10dp"
+            android:textColor="@color/colorAccent"
+            android:textCursorDrawable="@drawable/bg_input_cursor"
+            android:textSize="13sp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="#c5c5c5">
+
+        <EditText
+            android:id="@+id/edit_text_random"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_bg_edit"
+            android:hint="@string/hint_random_text"
+            android:inputType="text"
+            android:paddingBottom="10dp"
+            android:textColor="@color/colorAccent"
+            android:textCursorDrawable="@drawable/bg_input_cursor"
+            android:textSize="13sp" />
+    </android.support.design.widget.TextInputLayout>
+
+
+</FrameLayout>

@@ -18,13 +18,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ListAllBooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Book> books;
     private Context context;
     Picasso picasso;
 
-    public ListAllBooksAdapter(Context context, List<Book> books, Picasso picasso) {
+    public BooksAdapter(Context context, List<Book> books, Picasso picasso) {
         this.context = context;
         this.books = books;
         this.picasso = picasso;

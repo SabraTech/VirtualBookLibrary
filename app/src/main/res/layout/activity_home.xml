@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Home Libiray"
+            android:text="@string/home_label"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
@@ -32,6 +32,7 @@
         android:layout_marginTop="-24dp"
         android:src="@drawable/ic_filter"
         android:tint="@color/filters_chips"
+        android:onClick="filter"
         app:backgroundTint="@color/filtersfab"
         app:elevation="0dp" />
 
@@ -51,6 +52,7 @@
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_search"
         android:tint="@color/filters_chips"
+        android:onClick="search"
         app:backgroundTint="@color/filtersfab"
         app:elevation="0dp" />
 

@@ -26,7 +26,7 @@ import java.util.List;
 public class ResultViewActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewBooks;
-    private ListAllBooksAdapter booksRecyclerAdapter;
+    private BooksAdapter booksRecyclerAdapter;
     private List<Book> books;
     private String URL;
     Picasso picasso;
@@ -60,7 +60,7 @@ public class ResultViewActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewBooks = findViewById(R.id.recycleBooksList);
         recyclerViewBooks.setLayoutManager(linearLayoutManager);
-        booksRecyclerAdapter = new ListAllBooksAdapter(this, books, picasso);
+        booksRecyclerAdapter = new BooksAdapter(this, books, picasso);
         recyclerViewBooks.setAdapter(booksRecyclerAdapter);
     }
 

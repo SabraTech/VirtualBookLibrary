@@ -1,17 +1,22 @@
 package com.example.space.virtualbooklibrary;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.google.api.client.util.Base64;
@@ -34,12 +39,12 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     FloatingActionButton fabSearch, fabFilter;
     RecyclerView recyclerViewBooks;
-    ListAllBooksAdapter booksAdapter;
+    BooksAdapter booksAdapter;
     BookData bookData;
     Picasso picasso;
     private List<Book> books;
     MyFabFragment dialogFrag;
-    private String URL, serverIp;
+    private String historyURL, searchURL, serverIp;
     private ArrayMap<String, List<String>> appliedFilters;
 
     @Override
@@ -58,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     }
 
-    private void afterBooksQuery() {
+    private void afterHistoryQuery() {
         fabSearch = findViewById(R.id.fab_search);
         fabFilter = findViewById(R.id.fab_filter);
         recyclerViewBooks = findViewById(R.id.recycler_books);
@@ -66,7 +71,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         bookData = new BookData(books);
         picasso = Picasso.with(this);
 
-        booksAdapter = new ListAllBooksAdapter(this, books, picasso);
+        booksAdapter = new BooksAdapter(this, books, picasso);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewBooks.setLayoutManager(linearLayoutManager);
         recyclerViewBooks.setItemAnimator(new DefaultItemAnimator());
@@ -74,34 +79,68 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
         dialogFrag = MyFabFragment.newInstance();
         dialogFrag.setParentFab(fabFilter);
-        fabFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
-            }
-        });
+    }
 
-        fabSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, SearchActivity.class);
-                intent.putExtra("server", serverIp);
-                startActivity(intent);
-            }
-        });
+    public void filter(View view) {
+        dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
+    }
+
+    public void search(View view) {
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_search, null);
+        final EditText title = dialogView.findViewById(R.id.edit_text_title);
+        final EditText isbn = dialogView.findViewById(R.id.edit_text_isbn);
+        final EditText author = dialogView.findViewById(R.id.edit_text_author);
+        final EditText random = dialogView.findViewById(R.id.edit_text_random);
+        new AlertDialog.Builder(this)
+                .setTitle("Find Books")
+                .setView(dialogView)
+                .setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String titleString = title.getText().toString();
+                        String isbnString = isbn.getText().toString();
+                        String authorString = author.getText().toString();
+                        String randomString = random.getText().toString();
+
+                        if (validate(titleString, isbnString, authorString, randomString)) {
+                            searchURL = "http://" + serverIp + ":8080/books?ISBN="
+                                    + isbnString + "&author=" + authorString + "&title=" + titleString + "&random=" + randomString;
+                            dialogInterface.dismiss();
+                            new SearchQuery().execute();
+                        } else {
+                            Toast.makeText(HomeActivity.this, "At least search by one item!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+    }
+
+    private void afterSearchQuery() {
+        bookData.setBookList(books);
+        booksAdapter.notifyDataSetChanged();
+    }
+
+    private boolean validate(String titleStr, String isbnStr, String authorStr, String randomStr) {
+        return (titleStr.length() > 0 || isbnStr.length() > 0 || authorStr.length() > 0 || randomStr.length() > 0);
     }
 
     private void getBooksHistory() {
         // create link for the book history and populate books list
-        URL = URL = "http://" + serverIp + ":8080/filter?ISBN=";
+        historyURL = "http://" + serverIp + ":8080/filter?ISBN=";
 
-        new Connection().execute();
+        new HistoryQuery().execute();
     }
 
-    private void getBooksList() {
+    private void getHistoryBooksList() {
         // call the api here and set the private list books.
         HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(URL);
+        HttpGet request = new HttpGet(historyURL);
         try {
             HttpResponse response = client.execute(request);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -113,7 +152,30 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             List<Book> rtrn = new ArrayList<>();
             Object object = new ObjectInputStream(input).readObject();
             rtrn = (List<Book>) object;
-            this.books = rtrn;
+            this.books.clear();
+            this.books.addAll(rtrn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSearchBooksList() {
+        // call the api here and set the private list books.
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(searchURL);
+        try {
+            HttpResponse response = client.execute(request);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            response.getEntity().writeTo(output);
+
+            byte[] byteArray = Base64.decodeBase64(output.toByteArray());
+            ByteInputStream input = new ByteInputStream(byteArray, byteArray.length);
+
+            List<Book> rtrn = new ArrayList<>();
+            Object object = new ObjectInputStream(input).readObject();
+            rtrn = (List<Book>) object;
+            this.books.clear();
+            this.books.addAll(rtrn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,14 +253,14 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         Log.d("aah_animation", "onCloseAnimationEnd: ");
     }
 
-    private class Connection extends AsyncTask {
+    private class HistoryQuery extends AsyncTask {
 
         private LovelyProgressDialog loading = new LovelyProgressDialog(HomeActivity.this).setCancelable(false);
 
 
         @Override
         protected Object doInBackground(Object[] objects) {
-            getBooksList();
+            getHistoryBooksList();
             return null;
         }
 
@@ -214,7 +276,34 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             loading.dismiss();
-            afterBooksQuery();
+            afterHistoryQuery();
+        }
+    }
+
+    private class SearchQuery extends AsyncTask {
+
+        private LovelyProgressDialog loading = new LovelyProgressDialog(HomeActivity.this).setCancelable(false);
+
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            getSearchBooksList();
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading.setTitle("Loading Books...")
+                    .setTopColor(getResources().getColor(R.color.colorAccent))
+                    .show();
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            loading.dismiss();
+            afterSearchQuery();
         }
     }
 }

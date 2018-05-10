@@ -16,6 +16,10 @@ public class BookData {
         return this.bookList;
     }
 
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
+    }
+
     public List<Book> getCategoryFilteredBooks(List<String> category, List<Book> bookList) {
         List<Book> tempList = new ArrayList<>();
         for (Book book : bookList) {
