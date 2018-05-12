@@ -1,7 +1,9 @@
 package com.example.space.virtualbooklibrary;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -56,14 +58,27 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         final Book book = books.get(position);
         final String bookCoverLink = book.getThumbnailLink();
         final String title = book.getTitle();
+        final String price = book.getGoogleEbooksPrice();
         final int rating = book.getRatingStars().length();
         final String author = book.getAuthors().toString();
         final String id = book.getId();
+        final String bookUri = book.getLink();
 
 
         picasso.load(bookCoverLink).placeholder(android.R.color.darker_gray).config(Bitmap.Config.RGB_565).into(((ItemBooksViewHolder) holder).bookCover);
+        ((ItemBooksViewHolder) holder).bookCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(bookUri));
+                context.startActivity(intent);
+            }
+        });
         ((ItemBooksViewHolder) holder).txtTitle.setText(title);
         ((ItemBooksViewHolder) holder).txtAuthor.setText(author);
+        ((ItemBooksViewHolder) holder).txtPrice.setText(price);
         ((ItemBooksViewHolder) holder).ratingBar.setRating((float) rating);
 
         // check if the book in the list of favourite
@@ -117,7 +132,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     class ItemBooksViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtTitle, txtAuthor;
+        TextView txtTitle, txtAuthor, txtPrice;
         ImageView bookCover;
         RatingBar ratingBar;
         ToggleButton favourite;
@@ -127,6 +142,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtTitle);
             txtAuthor = itemView.findViewById(R.id.txtAuthor);
+            txtPrice = itemView.findViewById(R.id.txtPrice);
             bookCover = itemView.findViewById(R.id.bookCover);
             ratingBar = itemView.findViewById(R.id.ratingbar);
             favourite = itemView.findViewById(R.id.favourite_button);
