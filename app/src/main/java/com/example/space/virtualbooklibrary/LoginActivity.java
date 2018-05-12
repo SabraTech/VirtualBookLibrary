@@ -17,13 +17,14 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText username, password;
     private String usernameString, passwordString;
-    private String URL, errorMesg, serverIp;
+    private String URL, errorMesg, serverIp, sessionToken;
     private int ans;
 
     @Override
@@ -66,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         if (validate(usernameString, passwordString)) {
             // give the user the session to the app
             URL = "http://" + serverIp + ":8080/signin?id="
-                    + usernameString + "&password=" + passwordString;
+                    + usernameString;
 
             new Connection().execute();
 
@@ -90,6 +91,8 @@ public class LoginActivity extends AppCompatActivity {
             // go to search
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.putExtra("server", serverIp);
+            intent.putExtra("username", usernameString);
+            intent.putExtra("token", sessionToken);
             startActivity(intent);
             finish();
         } else if (ans == 2) {
@@ -104,11 +107,13 @@ public class LoginActivity extends AppCompatActivity {
         HttpClient client = new DefaultHttpClient();
         HttpPost request = new HttpPost(URL);
         try {
+            request.setEntity(new StringEntity(this.passwordString));
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             if (code == 202) {
                 // accept
                 this.ans = 1;
+                this.sessionToken = response.getEntity().getContent().toString();
             } else {
                 // worng id or pass format
                 this.ans = 2;

@@ -2,6 +2,7 @@ package com.example.space.virtualbooklibrary;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,18 +17,31 @@ import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.util.List;
+import java.util.Set;
 
 public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Book> books;
+    private Set<String> bookIdSet;
     private Context context;
+    private String addFavouriteURL, serverIp, sessionToken, username;
     Picasso picasso;
 
-    public BooksAdapter(Context context, List<Book> books, Picasso picasso) {
+    public BooksAdapter(Context context, List<Book> books, Set<String> bookIdSet, Picasso picasso, String serverIp, String sessionToken, String username) {
         this.context = context;
         this.books = books;
+        this.bookIdSet = bookIdSet;
         this.picasso = picasso;
+        this.serverIp = serverIp;
+        this.sessionToken = sessionToken;
+        this.username = username;
     }
 
     @NonNull
@@ -44,6 +58,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         final String title = book.getTitle();
         final int rating = book.getRatingStars().length();
         final String author = book.getAuthors().toString();
+        final String id = book.getId();
 
 
         picasso.load(bookCoverLink).placeholder(android.R.color.darker_gray).config(Bitmap.Config.RGB_565).into(((ItemBooksViewHolder) holder).bookCover);
@@ -52,19 +67,23 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ((ItemBooksViewHolder) holder).ratingBar.setRating((float) rating);
 
         // check if the book in the list of favourite
-        ((ItemBooksViewHolder) holder).favourite.setChecked(false);
-        ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_gray));
+        if (bookIdSet.contains(id)) {
+            ((ItemBooksViewHolder) holder).favourite.setChecked(true);
+            ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_yellow));
+        } else {
+            ((ItemBooksViewHolder) holder).favourite.setChecked(false);
+            ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_gray));
+        }
+
 
         ((ItemBooksViewHolder) holder).favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_yellow));
-                    // add to user favourite
-
-                } else {
-                    ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_gray));
-                    // remove from user favourite
+                    addFavouriteURL = "http://" + serverIp + ":8080/user/" + username + "/favourite?ISBN="
+                            + id + "&title=" + title;
+                    new FavouriteQuery().execute();
                 }
             }
         });
@@ -76,6 +95,24 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return books.size();
         }
         return 0;
+    }
+
+    private void addBookToFavourite() {
+        HttpClient client = new DefaultHttpClient();
+        HttpPost request = new HttpPost(addFavouriteURL);
+        try {
+            request.setEntity(new StringEntity(this.sessionToken));
+            HttpResponse response = client.execute(request);
+            int code = response.getStatusLine().getStatusCode();
+            if (code == 200) {
+                // accept
+
+            } else {
+                // wrong
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     class ItemBooksViewHolder extends RecyclerView.ViewHolder {
@@ -95,6 +132,16 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             favourite = itemView.findViewById(R.id.favourite_button);
             this.context = context;
         }
+    }
+
+    private class FavouriteQuery extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            addBookToFavourite();
+            return null;
+        }
+
     }
 }
 

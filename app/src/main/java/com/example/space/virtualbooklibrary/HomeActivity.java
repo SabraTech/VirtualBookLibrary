@@ -26,14 +26,17 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks, AAH_FabulousFragment.AnimationListener {
 
@@ -42,9 +45,9 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     BooksAdapter booksAdapter;
     BookData bookData;
     Picasso picasso;
-    private List<Book> books;
+    private List<Book> books, favouriteBooks;
     MyFabFragment dialogFrag;
-    private String historyURL, searchURL, serverIp;
+    private String homeURL, searchURL, favouriteURL, serverIp, username, sessionToken;
     private ArrayMap<String, List<String>> appliedFilters;
 
     @Override
@@ -53,11 +56,14 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         setContentView(R.layout.activity_home);
 
         books = new ArrayList<>();
+        favouriteBooks = new ArrayList<>();
         appliedFilters = new ArrayMap<>();
 
         Intent intentData = getIntent();
 
         serverIp = intentData.getStringExtra("server");
+        username = intentData.getStringExtra("username");
+        sessionToken = intentData.getStringExtra("token");
 
         getBooksHistory();
 
@@ -68,10 +74,16 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         fabFilter = findViewById(R.id.fab_filter);
         recyclerViewBooks = findViewById(R.id.recycler_books);
 
+        Set<String> bookIdSet = new HashSet<>();
+        for (Book book : favouriteBooks) {
+            bookIdSet.add(book.getId());
+        }
+
+        books.addAll(favouriteBooks);
         bookData = new BookData(books);
         picasso = Picasso.with(this);
 
-        booksAdapter = new BooksAdapter(this, books, picasso);
+        booksAdapter = new BooksAdapter(this, books, bookIdSet, picasso, serverIp, sessionToken, username);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewBooks.setLayoutManager(linearLayoutManager);
         recyclerViewBooks.setItemAnimator(new DefaultItemAnimator());
@@ -104,8 +116,8 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                         String randomString = random.getText().toString();
 
                         if (validate(titleString, isbnString, authorString, randomString)) {
-                            searchURL = "http://" + serverIp + ":8080/books?ISBN="
-                                    + isbnString + "&author=" + authorString + "&title=" + titleString + "&random=" + randomString;
+                            searchURL = "http://" + serverIp + ":8080/user/" + username +
+                                    "/search?ISBN=" + isbnString + "&author=" + authorString + "&title=" + titleString + "&random=" + randomString;
                             dialogInterface.dismiss();
                             new SearchQuery().execute();
                         } else {
@@ -132,28 +144,50 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
 
     private void getBooksHistory() {
         // create link for the book history and populate books list
-        historyURL = "http://" + serverIp + ":8080/filter?ISBN=";
+        homeURL = "http://" + serverIp + ":8080/home/" + username;
+        favouriteURL = "http://" + serverIp + ":8080/user/" + username + "/favourites";
 
-        new HistoryQuery().execute();
+        new HomeQuery().execute();
     }
 
-    private void getHistoryBooksList() {
+    private void getHomeBooksList() {
         // call the api here and set the private list books.
         HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(historyURL);
+        HttpPost request = new HttpPost(homeURL);
+        HttpPost request2 = new HttpPost(favouriteURL);
         try {
+            request.setEntity(new StringEntity(this.sessionToken));
+            request2.setEntity(new StringEntity(this.sessionToken));
+
             HttpResponse response = client.execute(request);
+            HttpResponse response2 = client.execute(request2);
+
             ByteArrayOutputStream output = new ByteArrayOutputStream();
+            ByteArrayOutputStream output2 = new ByteArrayOutputStream();
+
             response.getEntity().writeTo(output);
+            response2.getEntity().writeTo(output2);
 
             byte[] byteArray = Base64.decodeBase64(output.toByteArray());
-            ByteInputStream input = new ByteInputStream(byteArray, byteArray.length);
+            byte[] byteArray2 = Base64.decodeBase64(output2.toByteArray());
 
-            List<Book> rtrn = new ArrayList<>();
+            ByteInputStream input = new ByteInputStream(byteArray, byteArray.length);
+            ByteInputStream input2 = new ByteInputStream(byteArray2, byteArray2.length);
+
+
+            List<Book> rtrn1 = new ArrayList<>();
+            List<Book> rtrn2 = new ArrayList<>();
+
             Object object = new ObjectInputStream(input).readObject();
-            rtrn = (List<Book>) object;
+            Object object2 = new ObjectInputStream(input2).readObject();
+
+            rtrn1 = (List<Book>) object;
             this.books.clear();
-            this.books.addAll(rtrn);
+            this.books.addAll(rtrn1);
+
+            rtrn2 = (List<Book>) object2;
+            this.favouriteBooks.clear();
+            this.favouriteBooks.addAll(rtrn2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,8 +196,9 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     private void getSearchBooksList() {
         // call the api here and set the private list books.
         HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(searchURL);
+        HttpPost request = new HttpPost(searchURL);
         try {
+            request.setEntity(new StringEntity(this.sessionToken));
             HttpResponse response = client.execute(request);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             response.getEntity().writeTo(output);
@@ -253,14 +288,14 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
         Log.d("aah_animation", "onCloseAnimationEnd: ");
     }
 
-    private class HistoryQuery extends AsyncTask {
+    private class HomeQuery extends AsyncTask {
 
         private LovelyProgressDialog loading = new LovelyProgressDialog(HomeActivity.this).setCancelable(false);
 
 
         @Override
         protected Object doInBackground(Object[] objects) {
-            getHistoryBooksList();
+            getHomeBooksList();
             return null;
         }
 

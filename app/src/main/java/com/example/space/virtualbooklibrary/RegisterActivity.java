@@ -13,6 +13,7 @@ import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.regex.Matcher;
@@ -23,7 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private EditText firstName, lastName, username, email, password, passwordRept;
     private String fnameString, lnameString, usernameString, emailString, passwordString, passwordReptString;
-    private String URL, errorMesg, serverIp;
+    private String URL, errorMesg, serverIp, sessionToken;
     private int ans;
 
     @Override
@@ -58,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (validate(fnameString, lnameString, usernameString, emailString, passwordString, passwordReptString)) {
             // here add the user to the database
             URL = "http://" + serverIp + ":8080/signup?id="
-                    + usernameString + "&password=" + passwordString + "&firstname=" + fnameString + "&lastname=" + lnameString + "&email=" + emailString;
+                    + usernameString + "&firstname=" + fnameString + "&lastname=" + lnameString + "&email=" + emailString;
 
             new Connection().execute();
 
@@ -72,6 +73,8 @@ public class RegisterActivity extends AppCompatActivity {
             // go to home
             Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
             intent.putExtra("server", serverIp);
+            intent.putExtra("username", usernameString);
+            intent.putExtra("token", sessionToken);
             startActivity(intent);
             finish();
         } else {
@@ -84,11 +87,13 @@ public class RegisterActivity extends AppCompatActivity {
         HttpClient client = new DefaultHttpClient();
         HttpPost request = new HttpPost(URL);
         try {
+            request.setEntity(new StringEntity(this.passwordString));
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             if (code == 201) {
                 // accept
                 this.ans = 1;
+                this.sessionToken = response.getEntity().getContent().toString();
             } else {
                 // worng id or pass format
                 this.ans = 2;
