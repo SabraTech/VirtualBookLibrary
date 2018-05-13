@@ -1,3 +1,6 @@
+import com.example.space.virtualbooklibrary.Book;
+import com.example.space.virtualbooklibrary.User;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -110,7 +113,7 @@ public class UserDatabaseHandler {
             if (rs != 1)
                 return new AuthenticationResult("Error!");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return new AuthenticationResult();
     }
@@ -132,7 +135,7 @@ public class UserDatabaseHandler {
             if (rs != 1)
                 return new AuthenticationResult("Error!");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return new AuthenticationResult();
     }
@@ -152,13 +155,13 @@ public class UserDatabaseHandler {
                 bookIDsAndTitles.add(new Pair(rs.getString(2), rs.getString(3)));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         System.out.println(bookIDsAndTitles);
         try {
             favourites = APIHandler.getHandler().getBooksWithIDs(bookIDsAndTitles);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return favourites;
     }
@@ -178,13 +181,13 @@ public class UserDatabaseHandler {
                 booksIDsAndTitles.add(new Pair(rs.getString(2), rs.getString(3)));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         System.out.println(booksIDsAndTitles);
         try {
             history = APIHandler.getHandler().getBooksWithIDs(booksIDsAndTitles);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return history;
     }
@@ -240,12 +243,12 @@ public class UserDatabaseHandler {
             Statement stmt;
             stmt = con.createStatement();
             String query = "select * from Library.Favourites where Favourites.User_ID = \"" + userName
-                    + "\"" + " and Favourites.Book_Title = \"" + ISBN + "\";";
+                    + "\"" + " and Favourites.Book_ID = \"" + ISBN + "\";";
             System.out.println(query);
             ResultSet rs = stmt.executeQuery(query);
             exists = rs.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return exists;
     }
@@ -258,12 +261,12 @@ public class UserDatabaseHandler {
             Statement stmt;
             stmt = con.createStatement();
             String query = "select * from Library.History where History.User_ID = \"" + userName + "\""
-                    + " and History.Book_Title = \"" + ISBN + "\";";
+                    + " and History.Book_ID = \"" + ISBN + "\";";
             System.out.println(query);
             ResultSet rs = stmt.executeQuery(query);
             exists = rs.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return exists;
     }
@@ -293,16 +296,19 @@ public class UserDatabaseHandler {
         System.out.println("---------------------------------------------------------------");
         // System.out.println(handler.deleteUser(first.getId()));
         // handler.getFavourites(first.getId());
-        // APIHandler.getHandler().queryGoogleBooks("", "Game of thrones", "", "",
-        // 0, first.getId(),
-        // false);
-        Pair[] favs = new Pair[]{new Pair("5NomkK4EV68C", "A Game of Thrones"), new Pair(
-                "d1tcIWvinTEC", "Game of Thrones and Philosophy"), new Pair("-ssYBwAAQBAJ",
-                "Game of Thrones on Business")};
-        for (Pair pair : favs)
-            UserDatabaseHandler.getHandler().addFavourite(first.getId(), pair.bookID, pair.bookTitle);
+        APIHandler.getHandler().queryGoogleBooks("", "Game of thrones", "", "", 0, first.getId(),
+                false);
+        // Pair[] favs = new Pair[] { new Pair("5NomkK4EV68C", "A Game of Thrones"),
+        // new Pair(
+        // "d1tcIWvinTEC", "Game of Thrones and Philosophy"), new
+        // Pair("-ssYBwAAQBAJ",
+        // "Game of Thrones on Business") };
+        // for (Pair pair : favs)
+        // UserDatabaseHandler.getHandler().addFavourite(first.getId(), pair.bookID,
+        // pair.bookTitle);
         System.out.println("---------------------------------------------------------------");
-        handler.getFavourites(first.getId());
+
+        handler.getHistory(first.getId());
         System.out.println("---------------------------------------------------------------");
         System.out.println(handler.deleteUser(first.getId()));
 

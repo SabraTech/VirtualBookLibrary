@@ -6,10 +6,12 @@ import java.util.List;
 
 public class BookData {
 
-    private List<Book> bookList;
+    private List<Book> bookList = new ArrayList<>();
 
     public BookData(List<Book> bookList) {
-        this.bookList = bookList;
+        if (bookList != null) {
+            this.bookList.addAll(bookList);
+        }
     }
 
     public List<Book> getAllBooks() {
@@ -24,8 +26,10 @@ public class BookData {
         List<Book> tempList = new ArrayList<>();
         for (Book book : bookList) {
             for (String g : category) {
-                if (book.getMainCategory().equalsIgnoreCase(g)) {
-                    tempList.add(book);
+                if (book.getCategories() != null) {
+                    if (book.getCategories().get(0).equalsIgnoreCase(g)) {
+                        tempList.add(book);
+                    }
                 }
             }
         }
@@ -48,9 +52,12 @@ public class BookData {
         List<Book> tempList = new ArrayList<>();
         for (Book book : bookList) {
             for (String r : rating) {
-                if (Integer.parseInt(book.getRatingStars()) >= Integer.parseInt(r.replace(">", ""))) {
-                    tempList.add(book);
+                if (book.getRatingStars() != null) {
+                    if (book.getRatingStars().length() >= Integer.parseInt(r.replaceAll("> ", ""))) {
+                        tempList.add(book);
+                    }
                 }
+
             }
         }
         return tempList;
@@ -59,8 +66,11 @@ public class BookData {
     public List<String> getUniqueCategoryKeys() {
         List<String> categories = new ArrayList<>();
         for (Book book : this.bookList) {
-            if (!categories.contains(book.getMainCategory())) {
-                categories.add(book.getMainCategory());
+
+            if (book.getCategories() != null) {
+                if (!categories.contains(book.getCategories().get(0))) {
+                    categories.add(book.getCategories().get(0));
+                }
             }
         }
         Collections.sort(categories);
@@ -81,10 +91,13 @@ public class BookData {
     public List<String> getUniqueRatingKeys() {
         List<String> ratings = new ArrayList<>();
         for (Book book : this.bookList) {
-            String rate = "> " + book.getRatingStars();
-            if (!ratings.contains(rate)) {
-                ratings.add(rate);
+            if (book.getRatingStars() != null) {
+                String rate = "> " + book.getRatingStars().length();
+                if (!ratings.contains(rate)) {
+                    ratings.add(rate);
+                }
             }
+
         }
         Collections.sort(ratings);
         return ratings;

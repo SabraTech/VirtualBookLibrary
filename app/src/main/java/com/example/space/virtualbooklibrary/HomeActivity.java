@@ -115,6 +115,13 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                         String authorString = author.getText().toString();
                         String randomString = random.getText().toString();
 
+                        titleString = titleString.replaceAll(" ", "+");
+                        isbnString = isbnString.replaceAll(" ", "+");
+                        authorString = authorString.replaceAll(" ", "+");
+                        randomString = randomString.replaceAll(" ", "+");
+
+
+
                         if (validate(titleString, isbnString, authorString, randomString)) {
                             searchURL = "http://" + serverIp + ":8080/user/" + username +
                                     "/search?ISBN=" + isbnString + "&author=" + authorString + "&title=" + titleString + "&random=" + randomString;
@@ -153,6 +160,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
     private void getHomeBooksList() {
         // call the api here and set the private list books.
         HttpClient client = new DefaultHttpClient();
+        HttpClient client2 = new DefaultHttpClient();
         HttpPost request = new HttpPost(homeURL);
         HttpPost request2 = new HttpPost(favouriteURL);
         try {
@@ -160,7 +168,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
             request2.setEntity(new StringEntity(this.sessionToken));
 
             HttpResponse response = client.execute(request);
-            HttpResponse response2 = client.execute(request2);
+            HttpResponse response2 = client2.execute(request2);
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             ByteArrayOutputStream output2 = new ByteArrayOutputStream();
@@ -253,6 +261,7 @@ public class HomeActivity extends AppCompatActivity implements AAH_FabulousFragm
                     books.addAll(filteredList);
                     booksAdapter.notifyDataSetChanged();
                 } else {
+                    books.clear();
                     books.addAll(bookData.getAllBooks());
                     booksAdapter.notifyDataSetChanged();
                 }

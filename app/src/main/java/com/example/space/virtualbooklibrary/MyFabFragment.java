@@ -179,16 +179,10 @@ public class MyFabFragment extends AAH_FabulousFragment {
             FlexboxLayout fbl = layout.findViewById(R.id.fbl);
             switch (position) {
                 case 0:
-                    inflateLayoutWithFilters("genre", fbl);
+                    inflateLayoutWithFilters("category", fbl);
                     break;
                 case 1:
                     inflateLayoutWithFilters("rating", fbl);
-                    break;
-                case 2:
-                    inflateLayoutWithFilters("year", fbl);
-                    break;
-                case 3:
-                    inflateLayoutWithFilters("quality", fbl);
                     break;
             }
             container.addView(layout);
@@ -202,7 +196,7 @@ public class MyFabFragment extends AAH_FabulousFragment {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -212,8 +206,6 @@ public class MyFabFragment extends AAH_FabulousFragment {
                     return "CATEGORY";
                 case 1:
                     return "RATING";
-                case 2:
-                    return "YEAR";
             }
             return "";
         }

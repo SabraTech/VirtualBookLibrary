@@ -26,14 +26,18 @@ public class Controller {
         post("/home/:id", new Route() {
             @Override
             public Object handle(Request request, Response response) {
+                System.out.println("Home");
                 String user = request.params(":id");
                 String userUUID = users.get(user);
 
                 if (request.body().equals(userUUID)) {
+                    System.out.println("Right Credentials");
                     try {
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
                         ObjectOutputStream out = new ObjectOutputStream(output);
-                        out.writeObject(UserDatabaseHandler.getHandler().getHistory(user));
+                        List<Book> rtrn = UserDatabaseHandler.getHandler().getHistory(user);
+                        System.out.println("List size : " + rtrn.size());
+                        out.writeObject(rtrn);
                         out.flush();
 
                         response.status(200);
@@ -130,7 +134,7 @@ public class Controller {
 
                     return Base64.encodeBase64String(output.toByteArray());
                 } else {
-                    System.out.println("Wrong UUID");
+                    System.out.println("Wrong UUID " + request.body());
                     return "Wrong UUID";
                 }
             }
@@ -139,13 +143,16 @@ public class Controller {
         post("/signin", new Route() {
             @Override
             public Object handle(Request request, Response response) {
+                System.out.println("Here is Sign In");
                 String ID = "";
                 ID = request.queryParams("id");
                 String password = "";
                 password = request.body();
+                System.out.println(ID + " " + password);
 
                 AuthenticationResult result = UserDatabaseHandler.getHandler().signIn(ID, password);
                 if (result.isValid()) {
+                    System.out.println("valid credentials");
                     response.status(202);
                     users.put(ID, UUID.randomUUID().toString());
                     System.out.println(users.get(ID));
@@ -160,6 +167,7 @@ public class Controller {
         post("/signup", new Route() {
             @Override
             public Object handle(Request request, Response response) {
+                System.out.println("Here");
                 String ID = "";
                 ID = request.queryParams("id");
                 String password = "";
@@ -170,11 +178,13 @@ public class Controller {
                 lastName = request.queryParams("lastname");
                 String email = "";
                 email = request.queryParams("email");
+                System.out.println(ID + " " + password);
 
                 User user = new User(ID, password, firstName, lastName, email);
 
                 AuthenticationResult result = UserDatabaseHandler.getHandler().signUp(user);
                 if (result.isValid()) {
+                    System.out.println("valid");
                     response.status(201);
                     users.put(ID, UUID.randomUUID().toString());
                     System.out.println(users.get(ID));

@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,15 +90,17 @@ public class RegisterActivity extends AppCompatActivity {
         try {
             request.setEntity(new StringEntity(this.passwordString));
             HttpResponse response = client.execute(request);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            response.getEntity().writeTo(output);
             int code = response.getStatusLine().getStatusCode();
             if (code == 201) {
                 // accept
                 this.ans = 1;
-                this.sessionToken = response.getEntity().getContent().toString();
+                this.sessionToken = new String(output.toByteArray());
             } else {
                 // worng id or pass format
                 this.ans = 2;
-                this.errorMesg = response.getEntity().getContent().toString();
+                this.errorMesg = new String(output.toByteArray());
             }
         } catch (Exception e) {
             e.printStackTrace();

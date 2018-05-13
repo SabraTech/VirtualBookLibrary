@@ -20,11 +20,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.ByteArrayOutputStream;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText username, password;
     private String usernameString, passwordString;
-    private String URL, errorMesg, serverIp, sessionToken;
+    private String URL, errorMesg, serverIp = "192.168.43.134", sessionToken;
     private int ans;
 
     @Override
@@ -50,12 +52,8 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        serverIp = input.getText().toString().trim();
-                        if (serverIp.length() > 0) {
-                            dialogInterface.dismiss();
-                        } else {
-                            input.setError("Enter the IP!");
-                        }
+                        Toast.makeText(LoginActivity.this, "serverIp: " + serverIp, Toast.LENGTH_SHORT).show();
+
                     }
                 }).show();
     }
@@ -109,15 +107,17 @@ public class LoginActivity extends AppCompatActivity {
         try {
             request.setEntity(new StringEntity(this.passwordString));
             HttpResponse response = client.execute(request);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            response.getEntity().writeTo(output);
             int code = response.getStatusLine().getStatusCode();
             if (code == 202) {
                 // accept
                 this.ans = 1;
-                this.sessionToken = response.getEntity().getContent().toString();
+                this.sessionToken = new String(output.toByteArray());
             } else {
                 // worng id or pass format
                 this.ans = 2;
-                this.errorMesg = response.getEntity().getContent().toString();
+                this.errorMesg = new String(output.toByteArray());
             }
         } catch (Exception e) {
             e.printStackTrace();

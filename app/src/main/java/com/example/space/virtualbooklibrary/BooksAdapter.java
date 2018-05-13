@@ -59,13 +59,16 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         final String bookCoverLink = book.getThumbnailLink();
         final String title = book.getTitle();
         final String price = book.getGoogleEbooksPrice();
-        final int rating = book.getRatingStars().length();
+        final int rating = book.getRatingStars() != null ? book.getRatingStars().length() : 0;
         final String author = book.getAuthors().toString();
         final String id = book.getId();
         final String bookUri = book.getLink();
 
 
-        picasso.load(bookCoverLink).placeholder(android.R.color.darker_gray).config(Bitmap.Config.RGB_565).into(((ItemBooksViewHolder) holder).bookCover);
+        if (bookCoverLink != null) {
+            picasso.load(bookCoverLink).placeholder(android.R.color.darker_gray).config(Bitmap.Config.RGB_565).into(((ItemBooksViewHolder) holder).bookCover);
+        }
+
         ((ItemBooksViewHolder) holder).bookCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,7 +82,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ((ItemBooksViewHolder) holder).txtTitle.setText(title);
         ((ItemBooksViewHolder) holder).txtAuthor.setText(author);
         ((ItemBooksViewHolder) holder).txtPrice.setText(price);
-        ((ItemBooksViewHolder) holder).ratingBar.setRating((float) rating);
+        ((ItemBooksViewHolder) holder).ratingBar.setRating(rating);
 
         // check if the book in the list of favourite
         if (bookIdSet.contains(id)) {
@@ -97,7 +100,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (isChecked) {
                     ((ItemBooksViewHolder) holder).favourite.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favourite_yellow));
                     addFavouriteURL = "http://" + serverIp + ":8080/user/" + username + "/favourite?ISBN="
-                            + id + "&title=" + title;
+                            + id + "&title=" + title.replaceAll(" ", "+");
                     new FavouriteQuery().execute();
                 }
             }

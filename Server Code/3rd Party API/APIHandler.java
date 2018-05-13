@@ -1,30 +1,17 @@
-
-/*
- * Copyright (c) 2011 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
-
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.example.space.virtualbooklibrary.Book;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+
 import com.google.api.services.books.Books;
-import com.google.api.services.books.Books.Volumes.List;
-import com.google.api.services.books.BooksRequestInitializer;
 import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
+import com.google.api.services.books.Books.Volumes.List;
+import com.google.api.services.books.BooksRequestInitializer;
 
 import java.net.URLEncoder;
-import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.text.NumberFormat;
 
 /* Singleton class, handles communications with Google Books through it's API
  *  and returns the results as an ArrayList of Books */
@@ -38,8 +25,9 @@ public class APIHandler {
     private JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     private APIHandler() {
-
     }
+
+    ;
 
     public static APIHandler getHandler() {
         if (SINGLETON_HANDLER == null)
@@ -77,7 +65,7 @@ public class APIHandler {
         List volumesList = books.volumes().list(query);
         // volumesList.setFilter("ebooks");
         volumesList.setStartIndex((long) page * 10);
-        volumesList.setMaxResults(10L);
+        volumesList.setMaxResults(10l);
 
         // Execute the query.
         Volumes volumes = volumesList.execute();
@@ -148,8 +136,8 @@ public class APIHandler {
                     }
                     System.out.println(" (" + volumeInfo.getRatingsCount() + " rating(s))");
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
+                ;
             }
             // Price (if any).
             if (saleInfo != null && "FOR_SALE".equals(saleInfo.getSaleability())) {
@@ -169,7 +157,6 @@ public class APIHandler {
                     }
                     System.out.println();
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
             }
@@ -272,13 +259,15 @@ public class APIHandler {
         return bldr.toString();
     }
 
-    public static void main(String[] args) {
-        try {
-            getHandler().queryGoogleBooks(""/* Random Text */
-                    , ""/* Title */, "george"/* Author */, ""/* ISBN */);
-            return;
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+  /*
+  public static void main(String[] args) {
+    try {
+      getHandler().queryGoogleBooks(""*//* Random Text *//*
+          , ""*//* Title *//*, "george"*//* Author *//*, ""*//* ISBN *//*);
+      return;
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
     }
+  }
+  */
 }
