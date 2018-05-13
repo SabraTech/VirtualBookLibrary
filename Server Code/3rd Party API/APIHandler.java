@@ -27,8 +27,6 @@ public class APIHandler {
     private APIHandler() {
     }
 
-    ;
-
     public static APIHandler getHandler() {
         if (SINGLETON_HANDLER == null)
             SINGLETON_HANDLER = new APIHandler();
@@ -65,7 +63,7 @@ public class APIHandler {
         List volumesList = books.volumes().list(query);
         // volumesList.setFilter("ebooks");
         volumesList.setStartIndex((long) page * 10);
-        volumesList.setMaxResults(10l);
+        volumesList.setMaxResults(10L);
 
         // Execute the query.
         Volumes volumes = volumesList.execute();
@@ -136,8 +134,8 @@ public class APIHandler {
                     }
                     System.out.println(" (" + volumeInfo.getRatingsCount() + " rating(s))");
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                ;
             }
             // Price (if any).
             if (saleInfo != null && "FOR_SALE".equals(saleInfo.getSaleability())) {
@@ -157,6 +155,7 @@ public class APIHandler {
                     }
                     System.out.println();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             }
